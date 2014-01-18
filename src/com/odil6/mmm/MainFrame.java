@@ -23,12 +23,14 @@ import javax.swing.border.EmptyBorder;
 public class MainFrame extends JFrame
 {
 	private static final long serialVersionUID = 1L;
+
 	private JPanel contentPane;
 
 	public static File rootFile;
 
 	public static void main(String[] args)
 	{
+		new MusicFile(new File("/users/meshulamsilk/test.something"));
 		EventQueue.invokeLater(new Runnable()
 		{
 			public void run()
@@ -61,9 +63,9 @@ public class MainFrame extends JFrame
 		contentPane.add(artistScroller);
 
 		Scanner reader = new Scanner(System.in);
-		String path = reader.nextLine();//JOptionPane.showInputDialog("Enter root path:");
+		String path = reader.nextLine();// JOptionPane.showInputDialog("Enter root path:");
 		while (!new File(path).exists())
-			path = reader.nextLine();//JOptionPane.showInputDialog("Enter root path:");
+			path = reader.nextLine();// JOptionPane.showInputDialog("Enter root path:");
 		rootFile = new File(path);
 
 		File[] artists = rootFile.listFiles(new FileFilter()
@@ -73,7 +75,10 @@ public class MainFrame extends JFrame
 				return child.isDirectory();
 			}
 		});
-		final JList artistList = new JList(artists);
+		DefaultListModel artistModel = new DefaultListModel();
+		for (File f : artists)
+			artistModel.add(0, new MusicFile(f));
+		final JList artistList = new JList(artistModel);
 		artistScroller.setViewportView(artistList);
 
 		JLabel lblBandsartist = new JLabel("bands/artist");
@@ -125,7 +130,7 @@ public class MainFrame extends JFrame
 				DefaultListModel albums = new DefaultListModel();
 				for (Object o : artistList.getSelectedValues())
 				{
-					File[] albumsForArtist = new File(o.toString()).listFiles(new FileFilter()
+					File[] albumsForArtist = new File(((MusicFile) o).getPath()).listFiles(new FileFilter()
 					{
 						public boolean accept(File arg0)
 						{
@@ -133,7 +138,7 @@ public class MainFrame extends JFrame
 						}
 					});
 					for (File f : albumsForArtist)
-						albums.add(0, f);
+						albums.add(0, new MusicFile(f));
 				}
 				albumList.setModel(albums);
 			}
@@ -146,15 +151,15 @@ public class MainFrame extends JFrame
 				DefaultListModel songs = new DefaultListModel();
 				for (Object o : albumList.getSelectedValues())
 				{
-					File[] songsForAlbum = new File(o.toString()).listFiles(new FileFilter()
+					File[] songsForAlbum = new File(((MusicFile) o).getPath()).listFiles(new FileFilter()
 					{
 						public boolean accept(File arg0)
 						{
-							return arg0.isFile();
+							return arg0.isFile() && (arg0.getName().endsWith(".mp3") || arg0.getName().endsWith(".flac"));
 						}
 					});
 					for (File f : songsForAlbum)
-						songs.add(0, f);
+						songs.add(0, new MusicFile(f));
 				}
 				songList.setModel(songs);
 			}

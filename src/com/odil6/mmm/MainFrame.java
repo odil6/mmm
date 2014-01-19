@@ -9,6 +9,10 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.channels.FileChannel;
 import java.util.Scanner;
 
 import javax.swing.BorderFactory;
@@ -223,9 +227,66 @@ public class MainFrame extends JFrame
 				if (fc.showOpenDialog(MainFrame.this) == JFileChooser.APPROVE_OPTION)
 				{
 					File destination = fc.getSelectedFile();
-					//Move the files array to the destination file
+					for ( MusicFile f:files)
+						try
+						{
+							copyFile(new File (f.getPath()),destination);
+						}
+						catch (IOException e)
+						{
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					
 				}
 			}
 		});
 	}
+	public static void copyFile(File sourceFile, File destFile) throws IOException
+	{
+		if (!destFile.getParentFile().exists())
+			destFile.getParentFile().mkdirs();
+		
+		if(destFile.exists())
+		{
+			System.out.println("Would you like to overwrite " + destFile.getName() + "?");
+			System.out.println("type only 'true' or 'false'!");
+			boolean input = new Scanner(System.in).nextBoolean();
+			if(!input)
+			{// substrimg- חותך סטרינג בין תווך מסויים
+				
+				File temp = destFile;
+				int i = 1;
+				while(temp.exists())
+					temp = new File(destFile.toString().substring(0, destFile.toString().lastIndexOf(".")) + "_" +
+							i++ + destFile.toString().substring(destFile.toString().lastIndexOf(".")));
+
+
+				destFile = temp;
+			}
+		}
+
+		
+		if (!destFile.exists())
+			destFile.createNewFile();
+		FileChannel source = null;
+		FileChannel destination = null;
+
+		try
+		{
+			source = new FileInputStream(sourceFile).getChannel();
+			destination = new FileOutputStream(destFile).getChannel();
+			destination.transferFrom(source, 0, source.size());
+		}
+		finally
+		{
+			if (source != null)
+				source.close();
+			if (destination != null)
+				destination.close();
+		}
+		System.out.println("Done pasting " + sourceFile.toString() + " to " + destFile.toString());
+
+	}
+
 }

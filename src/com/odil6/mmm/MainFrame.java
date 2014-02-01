@@ -22,6 +22,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -227,46 +228,37 @@ public class MainFrame extends JFrame
 				if (fc.showOpenDialog(MainFrame.this) == JFileChooser.APPROVE_OPTION)
 				{
 					File destination = fc.getSelectedFile();
-					for ( MusicFile f:files)
+					for (MusicFile f : files)
 						try
 						{
-							copyFile(new File (f.getPath()),destination);
+							copyFile(new File(f.getPath()), destination);
 						}
 						catch (IOException e)
 						{
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-					
+
 				}
 			}
 		});
 	}
+
 	public static void copyFile(File sourceFile, File destFile) throws IOException
 	{
 		if (!destFile.getParentFile().exists())
 			destFile.getParentFile().mkdirs();
-		
-		if(destFile.exists())
+
+		if (destFile.exists() && JOptionPane.showConfirmDialog(null, "Would you like to overwrite " + destFile.getName() + "?", "penis", JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION)
 		{
-			System.out.println("Would you like to overwrite " + destFile.getName() + "?");
-			System.out.println("type only 'true' or 'false'!");
-			boolean input = new Scanner(System.in).nextBoolean();
-			if(!input)
-			{// substrimg- חותך סטרינג בין תווך מסויים
-				
-				File temp = destFile;
-				int i = 1;
-				while(temp.exists())
-					temp = new File(destFile.toString().substring(0, destFile.toString().lastIndexOf(".")) + "_" +
-							i++ + destFile.toString().substring(destFile.toString().lastIndexOf(".")));
+			File temp = destFile;
+			int i = 1;
+			while (temp.exists())
+				temp = new File(destFile.toString().substring(0, destFile.toString().lastIndexOf(".")) + "_" + i++ + destFile.toString().substring(destFile.toString().lastIndexOf(".")));
 
-
-				destFile = temp;
-			}
+			destFile = temp;
 		}
 
-		
 		if (!destFile.exists())
 			destFile.createNewFile();
 		FileChannel source = null;
@@ -288,5 +280,4 @@ public class MainFrame extends JFrame
 		System.out.println("Done pasting " + sourceFile.toString() + " to " + destFile.toString());
 
 	}
-
 }

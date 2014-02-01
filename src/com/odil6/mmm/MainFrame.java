@@ -39,7 +39,6 @@ public class MainFrame extends JFrame
 
 	public static void main(String[] args)
 	{
-		new MusicFile(new File("/users/meshulamsilk/test.something"));
 		EventQueue.invokeLater(new Runnable()
 		{
 			public void run()
@@ -100,7 +99,8 @@ public class MainFrame extends JFrame
 		sl_contentPane.putConstraint(SpringLayout.EAST, lblBandsartist, 109, SpringLayout.WEST, contentPane);
 		contentPane.add(lblBandsartist);
 
-		ImagePanel imagePanel = new ImagePanel(this, MainFrame.class.getResource("/res/blank.png"));
+		System.out.println(this.getClass().getResource("").getPath());
+		ImagePanel imagePanel = new ImagePanel(this, this.getClass().getResourceAsStream("/blank.png"));
 		sl_contentPane.putConstraint(SpringLayout.WEST, imagePanel, 22, SpringLayout.EAST, artistScroller);
 		imagePanel.setPreferredSize(new Dimension(100, 100));
 		sl_contentPane.putConstraint(SpringLayout.NORTH, imagePanel, 32, SpringLayout.NORTH, contentPane);

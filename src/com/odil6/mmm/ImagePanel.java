@@ -4,7 +4,7 @@ import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.net.URL;
+import java.io.InputStream;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
@@ -14,11 +14,11 @@ public class ImagePanel extends JPanel
 	private static final long serialVersionUID = 1L;
 	private BufferedImage image;
 
-	public ImagePanel(Component parent, URL url)
+	public ImagePanel(Component parent, InputStream in)
 	{
 		try
 		{
-			image = ImageIO.read(url);
+			image = ImageIO.read(in);
 		}
 		catch (IOException ex)
 		{
